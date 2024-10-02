@@ -8,10 +8,23 @@ import {
   GeoVector,
 } from 'astronomy-engine';
 
+import sunImage from './images/sun.png';
+import mercuryImage from './images/mercury.png';
+import venusImage from './images/venus.png';
+import marsImage from './images/mars.png';
+import earthImage from './images/earth.png';
+import jupiterImage from './images/jupiter.png';
+import saturnImage from './images/saturn.png';
+import uranusImage from './images/uranus.png';
+import neptuneImage from './images/neptune.png';
+
+
 const planets = [
   {
     name: 'Mercury',
     body: Body.Mercury,
+    image: mercuryImage,
+    size: 30,
     color: '#8c8c8c',
     orbitalPeriod: 87.97, // days
     semiMajorAxis: 0.3871, // AU
@@ -20,6 +33,8 @@ const planets = [
   {
     name: 'Venus',
     body: Body.Venus,
+    size: 25,
+    image: venusImage,
     color: '#e39e1c',
     orbitalPeriod: 224.7,
     semiMajorAxis: 0.7233,
@@ -28,6 +43,8 @@ const planets = [
   {
     name: 'Earth',
     body: Body.Earth,
+    size: 30,
+    image: earthImage,
     color: '#2b82c9',
     orbitalPeriod: 365.26,
     semiMajorAxis: 1.0,
@@ -36,6 +53,8 @@ const planets = [
   {
     name: 'Mars',
     body: Body.Mars,
+    size: 30,
+    image: marsImage,
     color: '#c1440e',
     orbitalPeriod: 686.98,
     semiMajorAxis: 1.5273,
@@ -44,6 +63,8 @@ const planets = [
   {
     name: 'Jupiter',
     body: Body.Jupiter,
+    size:55,
+    image: jupiterImage,
     color: '#e0ae6f',
     orbitalPeriod: 4332.59,
     semiMajorAxis: 5.2028,
@@ -52,6 +73,8 @@ const planets = [
   {
     name: 'Saturn',
     body: Body.Saturn,
+    size:90,
+    image: saturnImage,
     color: '#f4d47a',
     orbitalPeriod: 10759.22,
     semiMajorAxis: 9.5388,
@@ -60,6 +83,8 @@ const planets = [
   {
     name: 'Uranus',
     body: Body.Uranus,
+    image: uranusImage,
+    size:95,
     color: '#82b3d1',
     orbitalPeriod: 30688.5,
     semiMajorAxis: 19.1914,
@@ -68,6 +93,8 @@ const planets = [
   {
     name: 'Neptune',
     body: Body.Neptune,
+    size:45,
+    image: neptuneImage,
     color: '#3f54ba',
     orbitalPeriod: 60182,
     semiMajorAxis: 30.0611,
@@ -236,6 +263,8 @@ const SolarSystem = () => {
     requestAnimationFrame(animate);
   };
 
+  const planetSize = 40;
+
   return (
     <div>
       {/* Date Picker and Button */}
@@ -252,7 +281,13 @@ const SolarSystem = () => {
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         {/* Solar System Visualization */}
         <svg width="700" height="700" viewBox="-350 -350 700 700">
-          <circle cx="0" cy="0" r="20" fill="yellow" /> {/* Sun */}
+          <image
+          href={sunImage}
+          x={-25}
+          y={-25}
+          width={'50px'}
+          height={'50px'}
+        />
           {planets.map((planet, index) => (
             <g key={planet.name}>
               {/* Orbit Path */}
@@ -272,12 +307,19 @@ const SolarSystem = () => {
               )}
               {/* Planet */}
               {positions[index] && positions[index].solarSystemPosition && (
-                <circle
-                  cx={positions[index].solarSystemPosition.x}
-                  cy={positions[index].solarSystemPosition.y}
-                  r="6"
-                  fill={planet.color}
-                />
+                 <image
+                 href={planet.image}
+                 x={
+                   positions[index].solarSystemPosition.x -
+                   (planet.size || planetSize) / 2
+                 }
+                 y={
+                   positions[index].solarSystemPosition.y -
+                   (planet.size || planetSize) / 2
+                 }
+                 width={planet.size || planetSize}
+                 height={planet.size || planetSize}
+               />
               )}
             </g>
           ))}
