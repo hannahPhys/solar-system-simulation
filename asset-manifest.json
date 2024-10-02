@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/solar-system-simulation/static/css/main.c2cffd1c.css",
+    "main.js": "/solar-system-simulation/static/js/main.28af93b6.js",
+    "static/js/453.04d71d43.chunk.js": "/solar-system-simulation/static/js/453.04d71d43.chunk.js",
+    "static/media/stars.jpg": "/solar-system-simulation/static/media/stars.b158366eff8696da57ac.jpg",
+    "static/media/sun.png": "/solar-system-simulation/static/media/sun.189902da5949a893e503.png",
+    "static/media/mars.png": "/solar-system-simulation/static/media/mars.4799a28467824ea15561.png",
+    "static/media/venus.png": "/solar-system-simulation/static/media/venus.d39a5975ea2c1bb046f6.png",
+    "static/media/earth.png": "/solar-system-simulation/static/media/earth.4fda33c17269d419d505.png",
+    "static/media/jupiter.png": "/solar-system-simulation/static/media/jupiter.4c926f03e29f1595d675.png",
+    "static/media/uranus.png": "/solar-system-simulation/static/media/uranus.d9b16a3a0704741cf79e.png",
+    "static/media/saturn.png": "/solar-system-simulation/static/media/saturn.cb79d07dba2a8306ad12.png",
+    "static/media/neptune.png": "/solar-system-simulation/static/media/neptune.9ab679e8be2fca4b75b9.png",
+    "index.html": "/solar-system-simulation/index.html",
+    "main.c2cffd1c.css.map": "/solar-system-simulation/static/css/main.c2cffd1c.css.map",
+    "main.28af93b6.js.map": "/solar-system-simulation/static/js/main.28af93b6.js.map",
+    "453.04d71d43.chunk.js.map": "/solar-system-simulation/static/js/453.04d71d43.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c2cffd1c.css",
+    "static/js/main.28af93b6.js"
+  ]
+}
