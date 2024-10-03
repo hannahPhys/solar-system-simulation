@@ -6,9 +6,19 @@ import {
   Rotation_EQJ_ECL,
   RotateVector,
   GeoVector,
+  EclipticLongitude,
+  SunPosition,
+  EclipticGeoMoon,
 } from 'astronomy-engine';
 
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from 'react-places-autocomplete';
+
+
 import sunImage from './images/sun.png';
+import moonImage from './images/moon.png';
 import mercuryImage from './images/mercury.png';
 import venusImage from './images/venus.png';
 import marsImage from './images/mars.png';
@@ -19,66 +29,96 @@ import uranusImage from './images/uranus.png';
 import neptuneImage from './images/neptune.png';
 
 
-const planets = [
+const celestialBodies = [
+  {
+    name: 'Sun',
+    body: Body.Sun,
+    image: sunImage,
+    size: 30,
+    color: 'yellow',
+    includeInSolarSystem: false,
+    includeInNatalChart: true,
+  },
+  {
+    name: 'Moon',
+    body: Body.Moon,
+    image: moonImage,
+    size: 30,
+    color: 'silver',
+    includeInSolarSystem: false,
+    includeInNatalChart: true,
+  },
   {
     name: 'Mercury',
     body: Body.Mercury,
     image: mercuryImage,
     size: 26,
     color: '#8c8c8c',
-    orbitalPeriod: 87.97, // days
-    semiMajorAxis: 0.3871, // AU
+    orbitalPeriod: 87.97,
+    semiMajorAxis: 0.3871,
     eccentricity: 0.2056,
+    includeInSolarSystem: true,
+    includeInNatalChart: true,
   },
   {
     name: 'Venus',
     body: Body.Venus,
-    size: 26,
     image: venusImage,
+    size: 26,
     color: '#e39e1c',
     orbitalPeriod: 224.7,
     semiMajorAxis: 0.7233,
     eccentricity: 0.0068,
+    includeInSolarSystem: true,
+    includeInNatalChart: true,
   },
   {
     name: 'Earth',
     body: Body.Earth,
-    size: 26,
     image: earthImage,
+    size: 26,
     color: '#2b82c9',
     orbitalPeriod: 365.26,
     semiMajorAxis: 1.0,
     eccentricity: 0.0167,
+    includeInSolarSystem: true,
+    includeInNatalChart: false, // Exclude Earth from the natal chart
   },
   {
     name: 'Mars',
     body: Body.Mars,
-    size: 26,
     image: marsImage,
+    size: 26,
     color: '#c1440e',
     orbitalPeriod: 686.98,
     semiMajorAxis: 1.5273,
     eccentricity: 0.0934,
+    includeInSolarSystem: true,
+    includeInNatalChart: true,
   },
   {
     name: 'Jupiter',
     body: Body.Jupiter,
-    size: 55,
     image: jupiterImage,
+    size: 55,
     color: '#e0ae6f',
     orbitalPeriod: 4332.59,
     semiMajorAxis: 5.2028,
     eccentricity: 0.0484,
+    includeInSolarSystem: true,
+    includeInNatalChart: true,
   },
   {
     name: 'Saturn',
     body: Body.Saturn,
-    size: 110,
     image: saturnImage,
+    size: 110,
     color: '#f4d47a',
     orbitalPeriod: 10759.22,
     semiMajorAxis: 9.5388,
     eccentricity: 0.0542,
+    includeInSolarSystem: true,
+    includeInNatalChart: true,
   },
   {
     name: 'Uranus',
@@ -89,27 +129,45 @@ const planets = [
     orbitalPeriod: 30688.5,
     semiMajorAxis: 19.1914,
     eccentricity: 0.0472,
+    includeInSolarSystem: true,
+    includeInNatalChart: true,
   },
   {
     name: 'Neptune',
     body: Body.Neptune,
-    size: 42,
     image: neptuneImage,
+    size: 42,
     color: '#3f54ba',
     orbitalPeriod: 60182,
     semiMajorAxis: 30.0611,
     eccentricity: 0.0086,
+    includeInSolarSystem: true,
+    includeInNatalChart: true,
   },
 ];
 
+const planets = celestialBodies.filter(
+  (body) => body.includeInSolarSystem
+);
+console.log('Solar System Bodies:', planets);
+const natalChartBodies = celestialBodies.filter(
+  (body) => body.includeInNatalChart
+);
+
+
 const SolarSystem = () => {
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
+  const [address, setAddress] = useState('');
+  const [natalPositions, setNatalPositions] = useState([]);
+
   const [targetDate, setTargetDate] = useState(new Date());
   const [currentDate, setCurrentDate] = useState(new Date());
   const [positions, setPositions] = useState([]);
   const [orbitPaths, setOrbitPaths] = useState([]);
   const [animating, setAnimating] = useState(false);
 
-  const animationDuration = 10000; // Animation duration in milliseconds
+  const animationDuration = 5000; // Animation duration in milliseconds
 
   // Define normalized orbit radii for even visual spacing
   const minRadius = 50;
@@ -143,7 +201,45 @@ const SolarSystem = () => {
       calculatePosition(planet, currentDate, index)
     );
     setPositions(initialPositions);
+
+    const initialNatalPositions = natalChartBodies.map((bodyData) =>
+      calculateNatalPosition(bodyData, currentDate)
+    );
+    setNatalPositions(initialNatalPositions);
   }, []);
+
+  const calculateNatalPosition = (bodyData, date) => {
+    const astroTime = new AstroTime(date);
+    let longitudeDeg;
+
+    if (bodyData.body === Body.Sun) {
+      // Use SunPosition to get the Sun's ecliptic longitude
+      const sunEcl = SunPosition(astroTime);
+      longitudeDeg = sunEcl.elon;
+    } else if (bodyData.body === Body.Moon) {
+      const moonEcl = EclipticGeoMoon(astroTime);
+      longitudeDeg = moonEcl.lon;
+    } else {
+      // Get ecliptic longitude directly
+      longitudeDeg = EclipticLongitude(bodyData.body, astroTime);
+    }
+
+    const longitudeRad = (longitudeDeg * Math.PI) / 180;
+    const normalizedLongitude = (longitudeDeg + 360) % 360;
+
+    const natalChartRadius = 150; // Adjust as needed
+    const natalX = natalChartRadius * Math.cos(longitudeRad);
+    const natalY = natalChartRadius * Math.sin(longitudeRad);
+
+    if (isNaN(longitudeRad) || isNaN(natalX) || isNaN(natalY)) {
+      console.error(`Invalid calculations for ${bodyData.name}`);
+      return null;
+    }
+
+    return {
+      natalChartPosition: { angle: normalizedLongitude, x: natalX, y: natalY },
+    };
+  };
 
   const calculateOrbitPath = (planet, numPoints = 360) => {
     const positions = [];
@@ -256,7 +352,17 @@ const SolarSystem = () => {
           calculatePosition(planet, interpolatedDate, index)
         );
         setPositions(newPositions);
+
+
+        const newNatalPositions = natalChartBodies.map((bodyData) =>
+          calculateNatalPosition(bodyData, interpolatedDate)
+        );
+        setNatalPositions(newNatalPositions);
+
+
         requestAnimationFrame(animate);
+
+
       }
     };
 
@@ -273,14 +379,34 @@ const SolarSystem = () => {
         onChange={handleDateChange}
         value={targetDate.toISOString().slice(0, 16)}
       />
+      <div style={{ marginBottom: '20px', color: 'white' }}>
+        <label style={{ marginRight: '10px' }}>
+          Latitude:
+          <input
+            type="number"
+            value={latitude}
+            onChange={(e) => setLatitude(parseFloat(e.target.value))}
+            style={{ marginLeft: '5px' }}
+          />
+        </label>
+        <label>
+          Longitude:
+          <input
+            type="number"
+            value={longitude}
+            onChange={(e) => setLongitude(parseFloat(e.target.value))}
+            style={{ marginLeft: '5px' }}
+          />
+        </label>
+      </div>
       <button onClick={animatePlanets} disabled={animating}>
         Animate to Position
       </button>
 
       {/* Side-by-Side Visualizations */}
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
+      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
         {/* Solar System Visualization */}
-        <svg width="700" height="700" viewBox="-350 -350 700 700">
+        <svg width="700" height="600" viewBox="-350 -350 700 700">
           <image
             href={sunImage}
             x={-30}
@@ -326,7 +452,7 @@ const SolarSystem = () => {
         </svg>
 
         {/* Natal Chart Visualization */}
-        <svg width="600" height="500" viewBox="-150 -185 300 400">
+        <svg width="700" height="600" viewBox="-250 -250 500 500"preserveAspectRatio="xMidYMid meet">
           {/* Natal Chart Circle */}
           <circle cx="0" cy="0" r="150" fill="none" stroke="#ccc" strokeWidth="1" />
           {/* Zodiac Signs Division */}
@@ -375,24 +501,23 @@ const SolarSystem = () => {
             );
           })}
           {/* Planets */}
-          {positions.map(
+          {natalPositions.map(
             (pos, index) =>
               pos &&
               pos.natalChartPosition && (
-
-                <g key={planets[index].name}>
+                <g key={natalChartBodies[index].name}>
                   <image
-                    href={planets[index].image}
+                    href={natalChartBodies[index].image}
                     x={
                       1.2 * pos.natalChartPosition.x -
-                      (planets[index].size || planetSize) / 2
+                      (natalChartBodies[index].size || planetSize) / 2
                     }
                     y={
                       1.2 * pos.natalChartPosition.y -
-                      (planets[index].size || planetSize) / 2
+                      (natalChartBodies[index].size || planetSize) / 2
                     }
-                    width={planets[index].size || planetSize}
-                    height={planets[index].size || planetSize}
+                    width={natalChartBodies[index].size || planetSize}
+                    height={natalChartBodies[index].size || planetSize}
                   />
 
                   <text
@@ -401,9 +526,9 @@ const SolarSystem = () => {
                     textAnchor="middle"
                     alignmentBaseline="middle"
                     fontSize="12"
-                    fill={planets[index].color}
+                    fill={natalChartBodies[index].color}
                   >
-                    {planets[index].name}
+                    
                   </text>
                 </g>
               )
