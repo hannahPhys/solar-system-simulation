@@ -1,25 +1,26 @@
 {
   "files": {
     "main.css": "/solar-system-simulation/static/css/main.c7c1b6e9.css",
-    "main.js": "/solar-system-simulation/static/js/main.787e7aee.js",
+    "main.js": "/solar-system-simulation/static/js/main.d4e4ce74.js",
     "static/js/453.04d71d43.chunk.js": "/solar-system-simulation/static/js/453.04d71d43.chunk.js",
     "static/media/stars.jpg": "/solar-system-simulation/static/media/stars.b158366eff8696da57ac.jpg",
     "static/media/sun.png": "/solar-system-simulation/static/media/sun.189902da5949a893e503.png",
-    "static/media/mars.png": "/solar-system-simulation/static/media/mars.4799a28467824ea15561.png",
     "static/media/moon.png": "/solar-system-simulation/static/media/moon.4b9f78cc6ccc8eab401f.png",
     "static/media/venus.png": "/solar-system-simulation/static/media/venus.d39a5975ea2c1bb046f6.png",
     "static/media/earth.png": "/solar-system-simulation/static/media/earth.4fda33c17269d419d505.png",
+    "static/media/pluto.png": "/solar-system-simulation/static/media/pluto.4221266b7120b62158cf.png",
+    "static/media/mars.png": "/solar-system-simulation/static/media/mars.fec2693cbd0a42a9a6ae.png",
     "static/media/jupiter.png": "/solar-system-simulation/static/media/jupiter.4c926f03e29f1595d675.png",
     "static/media/uranus.png": "/solar-system-simulation/static/media/uranus.d9b16a3a0704741cf79e.png",
     "static/media/saturn.png": "/solar-system-simulation/static/media/saturn.cb79d07dba2a8306ad12.png",
     "static/media/neptune.png": "/solar-system-simulation/static/media/neptune.9ab679e8be2fca4b75b9.png",
     "index.html": "/solar-system-simulation/index.html",
     "main.c7c1b6e9.css.map": "/solar-system-simulation/static/css/main.c7c1b6e9.css.map",
-    "main.787e7aee.js.map": "/solar-system-simulation/static/js/main.787e7aee.js.map",
+    "main.d4e4ce74.js.map": "/solar-system-simulation/static/js/main.d4e4ce74.js.map",
     "453.04d71d43.chunk.js.map": "/solar-system-simulation/static/js/453.04d71d43.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.c7c1b6e9.css",
-    "static/js/main.787e7aee.js"
+    "static/js/main.d4e4ce74.js"
   ]
 }
